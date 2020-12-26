@@ -1,43 +1,31 @@
 require('./config/config');
 
 const express = require('express');
-const app = express();
+const mongoose = require('mongoose');
 
+const app = express();
 
 const bodyParser = require('body-parser');
 // parse application/x-www-form-urlencoded
-app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.urlencoded({ extended: true }));
 
 // parse application/json
 app.use(bodyParser.json());
 
-app.get('/usuario', function(req, res) {
-    res.json('get Usuarios');
-});
 
-app.post('/usuario', function(req, res) {
+//usar rutas
+app.use(require('./routes/usuario'));
 
-    let persona = req.body;
 
-    if (persona.nombre === undefined) {
-        res.status(400).json({
-            ok: false,
-            mensaje: "No se ha enviado el nombre de la persona"
-        });
-    } else {
-        res.json({ persona });
-    }
 
-});
 
-app.put('/usuario/:id', function(req, res) {
+mongoose.connect(process.env.URLDB, {
+        useNewUrlParser: true,
+        useUnifiedTopology: true,
+        useFindAndModify: false,
+        useCreateIndex: true
+    }).then(() => { console.log("Base de datos ONLINE"); })
+    .catch(error => handleError(error));
 
-    let id = req.params.id;
-    res.json({ id });
-});
-
-app.delete('/usuario', function(req, res) {
-    res.json('delete Usuarios');
-});
-
+//escuchando el server
 app.listen(process.env.PORT, () => { console.log(`Escuchando en puerto ${process.env.PORT}`); });
