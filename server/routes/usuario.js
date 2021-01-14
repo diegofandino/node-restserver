@@ -4,8 +4,9 @@ const _ = require('underscore');
 const router = express.Router();
 const Usuario = require('../models/usuario');
 const { response } = require('express');
+const { verificarToken, verificarRole } = require('../middlewares/auth');
 
-router.get('/usuario', function(req, res) {
+router.get('/usuario', verificarToken, function(req, res) {
 
     let desde = req.query.desde || 0;
     desde = Number(desde);
@@ -40,7 +41,7 @@ router.get('/usuario', function(req, res) {
 
 });
 
-router.post('/usuario', function(req, res) {
+router.post('/usuario', [verificarToken, verificarRole], function(req, res) {
 
     let persona = req.body;
 
@@ -69,7 +70,7 @@ router.post('/usuario', function(req, res) {
 
 });
 
-router.put('/usuario/:id', function(req, res) {
+router.put('/usuario/:id', [verificarToken, verificarRole], function(req, res) {
 
     let id = req.params.id;
     let body = _.pick(req.body, ['nombre', 'email', 'img', 'estado', 'role']);
@@ -93,7 +94,7 @@ router.put('/usuario/:id', function(req, res) {
 
 });
 
-router.delete('/usuario/:id', function(req, res) {
+router.delete('/usuario/:id', verificarToken, function(req, res) {
 
     let id = req.params.id;
     let cambiarEstado = {

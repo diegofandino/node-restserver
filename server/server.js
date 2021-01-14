@@ -15,6 +15,7 @@ app.use(bodyParser.json());
 
 //usar rutas
 app.use(require('./routes/usuario'));
+app.use(require('./routes/login'));
 
 
 
